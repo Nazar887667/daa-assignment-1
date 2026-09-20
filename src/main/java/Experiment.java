@@ -1,4 +1,8 @@
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Experiment {
+    private static final int RUNS = 5;
 
     public static void main(String[] args) {
 
@@ -7,107 +11,166 @@ public class Experiment {
 
         int[] sizes = {100, 1000, 5000};
 
-        for (int n : sizes) {
+        try (FileWriter writer = new FileWriter("results.csv")) {
 
-            System.out.println();
-            System.out.println("Input size: " + n);
-
-            // Merge Sort
-            runMergeSortExperiment(
-                    "Random",
-                    InputGenerator.randomArray(n)
+            writer.write(
+                    "algorithm,input_type,input_size,average_time_ns," +
+                            "recursion_depth,comparisons,swaps\n"
             );
 
-            runMergeSortExperiment(
-                    "Sorted",
-                    InputGenerator.sortedArray(n)
-            );
+            for (int n : sizes) {
 
-            runMergeSortExperiment(
-                    "Reverse-sorted",
-                    InputGenerator.reverseSortedArray(n)
-            );
+                System.out.println();
+                System.out.println("Input size: " + n);
 
-            runMergeSortExperiment(
-                    "Duplicate-heavy",
-                    InputGenerator.duplicateHeavyArray(n)
-            );
+                runMergeSortExperiment(
+                        "Random",
+                        n,
+                        InputGenerator.randomArray(n),
+                        writer
+                );
 
-            // Quick Sort
-            runQuickSortExperiment(
-                    "Random",
-                    InputGenerator.randomArray(n)
-            );
+                runMergeSortExperiment(
+                        "Sorted",
+                        n,
+                        InputGenerator.sortedArray(n),
+                        writer
+                );
 
-            runQuickSortExperiment(
-                    "Sorted",
-                    InputGenerator.sortedArray(n)
-            );
+                runMergeSortExperiment(
+                        "Reverse-sorted",
+                        n,
+                        InputGenerator.reverseSortedArray(n),
+                        writer
+                );
 
-            runQuickSortExperiment(
-                    "Reverse-sorted",
-                    InputGenerator.reverseSortedArray(n)
-            );
+                runMergeSortExperiment(
+                        "Duplicate-heavy",
+                        n,
+                        InputGenerator.duplicateHeavyArray(n),
+                        writer
+                );
 
-            runQuickSortExperiment(
-                    "Duplicate-heavy",
-                    InputGenerator.duplicateHeavyArray(n)
-            );
+                runQuickSortExperiment(
+                        "Random",
+                        n,
+                        InputGenerator.randomArray(n),
+                        writer
+                );
 
-            // Deterministic Select
-            runSelectExperiment(
-                    "Random",
-                    InputGenerator.randomArray(n)
-            );
+                runQuickSortExperiment(
+                        "Sorted",
+                        n,
+                        InputGenerator.sortedArray(n),
+                        writer
+                );
 
-            runSelectExperiment(
-                    "Sorted",
-                    InputGenerator.sortedArray(n)
-            );
+                runQuickSortExperiment(
+                        "Reverse-sorted",
+                        n,
+                        InputGenerator.reverseSortedArray(n),
+                        writer
+                );
 
-            runSelectExperiment(
-                    "Reverse-sorted",
-                    InputGenerator.reverseSortedArray(n)
-            );
+                runQuickSortExperiment(
+                        "Duplicate-heavy",
+                        n,
+                        InputGenerator.duplicateHeavyArray(n),
+                        writer
+                );
 
-            runSelectExperiment(
-                    "Duplicate-heavy",
-                    InputGenerator.duplicateHeavyArray(n)
-            );
+                runSelectExperiment(
+                        "Random",
+                        n,
+                        InputGenerator.randomArray(n),
+                        writer
+                );
 
-            // Closest Pair
-            runClosestPairExperiment(
-                    "Random points",
-                    InputGenerator.randomPoints(n)
-            );
+                runSelectExperiment(
+                        "Sorted",
+                        n,
+                        InputGenerator.sortedArray(n),
+                        writer
+                );
+
+                runSelectExperiment(
+                        "Reverse-sorted",
+                        n,
+                        InputGenerator.reverseSortedArray(n),
+                        writer
+                );
+
+                runSelectExperiment(
+                        "Duplicate-heavy",
+                        n,
+                        InputGenerator.duplicateHeavyArray(n),
+                        writer
+                );
+
+                runClosestPairExperiment(
+                        "Random points",
+                        n,
+                        InputGenerator.randomPoints(n),
+                        writer
+                );
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     private static void runMergeSortExperiment(
             String type,
-            int[] array) {
+            int n,
+            int[] array,
+            FileWriter writer) throws IOException {
 
-        MergeSorter sorter = new MergeSorter();
+        long totalTime = 0;
+        int recursionDepth = 0;
+        long comparisons = 0;
 
-        long startTime = System.nanoTime();
+        for (int i = 0; i < RUNS; i++) {
 
-        sorter.sort(array);
+            int[] testArray = array.clone();
+            MergeSorter sorter = new MergeSorter();
 
-        long endTime = System.nanoTime();
+            long startTime = System.nanoTime();
 
-        long executionTime = endTime - startTime;
+            sorter.sort(testArray);
 
-        int recursionDepth =
-                sorter.getMaxRecursionDepth();
+            long endTime = System.nanoTime();
 
-        long comparisons =
-                sorter.getComparisons();
+            totalTime += endTime - startTime;
+
+            recursionDepth = Math.max(
+                    recursionDepth,
+                    sorter.getMaxRecursionDepth()
+            );
+
+            comparisons = Math.max(
+                    comparisons,
+                    sorter.getComparisons()
+            );
+        }
+
+        long averageTime = totalTime / RUNS;
+
+        writer.write(
+                "Merge Sort," +
+                        type + "," +
+                        n + "," +
+                        averageTime + "," +
+                        recursionDepth + "," +
+                        comparisons + "," +
+                        0 + "\n"
+        );
 
         System.out.println(
                 "Merge Sort - " +
                         type +
-                        ": time = " +
-                        executionTime +
+                        ": average time = " +
+                        averageTime +
                         " ns, recursion depth = " +
                         recursionDepth +
                         ", comparisons = " +
@@ -117,32 +180,61 @@ public class Experiment {
 
     private static void runQuickSortExperiment(
             String type,
-            int[] array) {
+            int n,
+            int[] array,
+            FileWriter writer) throws IOException {
 
-        QuickSorter sorter = new QuickSorter();
+        long totalTime = 0;
+        int recursionDepth = 0;
+        long comparisons = 0;
+        long swaps = 0;
 
-        long startTime = System.nanoTime();
+        for (int i = 0; i < RUNS; i++) {
 
-        sorter.sort(array);
+            int[] testArray = array.clone();
+            QuickSorter sorter = new QuickSorter();
 
-        long endTime = System.nanoTime();
+            long startTime = System.nanoTime();
 
-        long executionTime = endTime - startTime;
+            sorter.sort(testArray);
 
-        int recursionDepth =
-                sorter.getMaxRecursionDepth();
+            long endTime = System.nanoTime();
 
-        long comparisons =
-                sorter.getComparisons();
+            totalTime += endTime - startTime;
 
-        long swaps =
-                sorter.getSwaps();
+            recursionDepth = Math.max(
+                    recursionDepth,
+                    sorter.getMaxRecursionDepth()
+            );
+
+            comparisons = Math.max(
+                    comparisons,
+                    sorter.getComparisons()
+            );
+
+            swaps = Math.max(
+                    swaps,
+                    sorter.getSwaps()
+            );
+        }
+
+        long averageTime = totalTime / RUNS;
+
+        writer.write(
+                "Quick Sort," +
+                        type + "," +
+                        n + "," +
+                        averageTime + "," +
+                        recursionDepth + "," +
+                        comparisons + "," +
+                        swaps + "\n"
+        );
 
         System.out.println(
                 "Quick Sort - " +
                         type +
-                        ": time = " +
-                        executionTime +
+                        ": average time = " +
+                        averageTime +
                         " ns, recursion depth = " +
                         recursionDepth +
                         ", comparisons = " +
@@ -154,37 +246,66 @@ public class Experiment {
 
     private static void runSelectExperiment(
             String type,
-            int[] array) {
+            int n,
+            int[] array,
+            FileWriter writer) throws IOException {
 
-        DeterministicSelector selector =
-                new DeterministicSelector();
+        long totalTime = 0;
+        int recursionDepth = 0;
+        long comparisons = 0;
+        long swaps = 0;
+        int selectedValue = 0;
 
-        int k = array.length / 2;
+        for (int i = 0; i < RUNS; i++) {
 
-        long startTime = System.nanoTime();
+            int[] testArray = array.clone();
 
-        int selectedValue =
-                selector.select(array, k);
+            DeterministicSelector selector =
+                    new DeterministicSelector();
 
-        long endTime = System.nanoTime();
+            int k = testArray.length / 2;
 
-        long executionTime =
-                endTime - startTime;
+            long startTime = System.nanoTime();
 
-        int recursionDepth =
-                selector.getMaxRecursionDepth();
+            selectedValue = selector.select(testArray, k);
 
-        long comparisons =
-                selector.getComparisons();
+            long endTime = System.nanoTime();
 
-        long swaps =
-                selector.getSwaps();
+            totalTime += endTime - startTime;
+
+            recursionDepth = Math.max(
+                    recursionDepth,
+                    selector.getMaxRecursionDepth()
+            );
+
+            comparisons = Math.max(
+                    comparisons,
+                    selector.getComparisons()
+            );
+
+            swaps = Math.max(
+                    swaps,
+                    selector.getSwaps()
+            );
+        }
+
+        long averageTime = totalTime / RUNS;
+
+        writer.write(
+                "Deterministic Select," +
+                        type + "," +
+                        n + "," +
+                        averageTime + "," +
+                        recursionDepth + "," +
+                        comparisons + "," +
+                        swaps + "\n"
+        );
 
         System.out.println(
                 "Deterministic Select - " +
                         type +
-                        ": time = " +
-                        executionTime +
+                        ": average time = " +
+                        averageTime +
                         " ns, recursion depth = " +
                         recursionDepth +
                         ", comparisons = " +
@@ -198,32 +319,57 @@ public class Experiment {
 
     private static void runClosestPairExperiment(
             String type,
-            Point[] points) {
+            int n,
+            Point[] points,
+            FileWriter writer) throws IOException {
 
-        ClosestPairSolver solver =
-                new ClosestPairSolver();
+        long totalTime = 0;
+        int recursionDepth = 0;
+        long comparisons = 0;
+        double distance = 0;
 
-        long startTime = System.nanoTime();
+        for (int i = 0; i < RUNS; i++) {
 
-        double distance =
-                solver.findClosestDistance(points);
+            Point[] testPoints = points.clone();
+            ClosestPairSolver solver =
+                    new ClosestPairSolver();
 
-        long endTime = System.nanoTime();
+            long startTime = System.nanoTime();
 
-        long executionTime =
-                endTime - startTime;
+            distance = solver.findClosestDistance(testPoints);
 
-        int recursionDepth =
-                solver.getMaxRecursionDepth();
+            long endTime = System.nanoTime();
 
-        long comparisons =
-                solver.getComparisons();
+            totalTime += endTime - startTime;
+
+            recursionDepth = Math.max(
+                    recursionDepth,
+                    solver.getMaxRecursionDepth()
+            );
+
+            comparisons = Math.max(
+                    comparisons,
+                    solver.getComparisons()
+            );
+        }
+
+        long averageTime = totalTime / RUNS;
+
+        writer.write(
+                "Closest Pair," +
+                        type + "," +
+                        n + "," +
+                        averageTime + "," +
+                        recursionDepth + "," +
+                        comparisons + "," +
+                        0 + "\n"
+        );
 
         System.out.println(
                 "Closest Pair - " +
                         type +
-                        ": time = " +
-                        executionTime +
+                        ": average time = " +
+                        averageTime +
                         " ns, recursion depth = " +
                         recursionDepth +
                         ", comparisons = " +

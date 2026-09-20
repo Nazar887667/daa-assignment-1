@@ -1,0 +1,40 @@
+algorithm,input_type,input_size,average_time_ns,recursion_depth,comparisons,swaps
+Merge Sort,Random,100,31880,4,634,0
+Merge Sort,Sorted,100,5780,4,92,0
+Merge Sort,Reverse-sorted,100,32940,4,724,0
+Merge Sort,Duplicate-heavy,100,24020,4,634,0
+Quick Sort,Random,100,53260,5,684,336
+Quick Sort,Sorted,100,16080,4,779,104
+Quick Sort,Reverse-sorted,100,15900,5,719,314
+Quick Sort,Duplicate-heavy,100,17280,4,991,331
+Deterministic Select,Random,100,30400,3,378,144
+Deterministic Select,Sorted,100,39080,7,537,263
+Deterministic Select,Reverse-sorted,100,38080,6,674,257
+Deterministic Select,Duplicate-heavy,100,7960,1,310,115
+Closest Pair,Random points,100,975760,7,801,0
+Merge Sort,Random,1000,142200,7,10435,0
+Merge Sort,Sorted,1000,6060,7,936,0
+Merge Sort,Reverse-sorted,1000,52960,7,10300,0
+Merge Sort,Duplicate-heavy,1000,59200,7,9852,0
+Quick Sort,Random,1000,110820,7,11071,6040
+Quick Sort,Sorted,1000,62880,6,12097,1012
+Quick Sort,Reverse-sorted,1000,70660,7,11551,5610
+Quick Sort,Duplicate-heavy,1000,251840,4,54377,3212
+Deterministic Select,Random,1000,118100,10,7710,3189
+Deterministic Select,Sorted,1000,42620,10,5618,2943
+Deterministic Select,Reverse-sorted,1000,54780,10,7866,3183
+Deterministic Select,Duplicate-heavy,1000,23980,2,3179,1262
+Closest Pair,Random points,1000,3081760,10,13218,0
+Merge Sort,Random,5000,1767860,10,58277,0
+Merge Sort,Sorted,5000,291640,10,4488,0
+Merge Sort,Reverse-sorted,5000,1858540,10,44324,0
+Merge Sort,Duplicate-heavy,5000,1159840,10,55903,0
+Quick Sort,Random,5000,397420,8,71644,37944
+Quick Sort,Sorted,5000,155460,8,71229,5118
+Quick Sort,Reverse-sorted,5000,223980,8,72729,32566
+Quick Sort,Duplicate-heavy,5000,904020,4,1276167,15916
+Deterministic Select,Random,5000,1147940,12,39854,16860
+Deterministic Select,Sorted,5000,591520,12,30471,15922
+Deterministic Select,Reverse-sorted,5000,454120,12,41406,17142
+Deterministic Select,Duplicate-heavy,5000,143220,1,15425,6154
+Closest Pair,Random points,5000,17905700,12,79828,0
