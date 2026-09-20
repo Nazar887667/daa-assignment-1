@@ -21,6 +21,11 @@ public class Experiment {
             runQuickSortExperiment("Sorted", InputGenerator.sortedArray(n));
             runQuickSortExperiment("Reverse-sorted", InputGenerator.reverseSortedArray(n));
             runQuickSortExperiment("Duplicate-heavy", InputGenerator.duplicateHeavyArray(n));
+
+            runSelectExperiment("Random", InputGenerator.randomArray(n));
+            runSelectExperiment("Sorted", InputGenerator.sortedArray(n));
+            runSelectExperiment("Reverse-sorted", InputGenerator.reverseSortedArray(n));
+            runSelectExperiment("Duplicate-heavy", InputGenerator.duplicateHeavyArray(n));
         }
     }
 
@@ -74,4 +79,32 @@ public class Experiment {
         );
     }
 
+    private static void runSelectExperiment(String type, int[] array) {
+
+        DeterministicSelector selector = new DeterministicSelector();
+
+        int k = array.length / 2;
+
+        long startTime = System.nanoTime();
+
+        int selectedValue = selector.select(array, k);
+
+        long endTime = System.nanoTime();
+
+        long executionTime = endTime - startTime;
+
+        int recursionDepth = selector.getMaxRecursionDepth();
+        long comparisons = selector.getComparisons();
+        long swaps = selector.getSwaps();
+
+        System.out.println(
+                "Deterministic Select - " +
+                        type +
+                        ": time = " + executionTime + " ns" +
+                        ", recursion depth = " + recursionDepth +
+                        ", comparisons = " + comparisons +
+                        ", swaps = " + swaps +
+                        ", selected value = " + selectedValue
+        );
+    }
 }
