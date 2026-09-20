@@ -43,4 +43,17 @@ public class InputGenerator {
 
         return array;
     }
+    public static Point[] randomPoints(int n) {
+        Random random = new Random();
+        Point[] points = new Point[n];
+
+        for (int i = 0; i < n; i++) {
+            double x = random.nextDouble() * 100000;
+            double y = random.nextDouble() * 100000;
+
+            points[i] = new Point(x, y);
+        }
+
+        return points;
+    }
 }
